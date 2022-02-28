@@ -20,18 +20,20 @@ class ContributorsViewset(ModelViewSet):
     serializer_class = ContributorsListSerializer
  
     def get_queryset(self):
-        return Contributors.objects.all()
+        return Contributors.objects.filter(project=self.kwargs['project_pk'])
 
 class IssuesViewset(ModelViewSet):
  
     serializer_class = IssuesListSerializer
  
     def get_queryset(self):
-        return Issues.objects.all()
+        return Issues.objects.filter(project=self.kwargs['project_pk'])
+
 
 class CommentsViewset(ModelViewSet):
  
     serializer_class = CommentsListSerializer
  
     def get_queryset(self):
-        return Comments.objects.all()
+        print('---', Comments.objects.filter(issue__project__pk=2))
+        return Comments.objects.filter(issue=self.kwargs['issue_pk'], issue__project__pk=self.kwargs['project_pk'])

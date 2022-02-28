@@ -17,6 +17,8 @@ class ProjectsListSerializer(serializers.ModelSerializer):
         ]
 
 class ContributorsListSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
+    project = serializers.SlugRelatedField(slug_field="title", queryset=Projects.objects.all())
 
     class Meta:
         model = Contributors
@@ -24,9 +26,14 @@ class ContributorsListSerializer(serializers.ModelSerializer):
         'id',
         'user',
         'project',
+        'role',
+        'permission',
         ]
 
 class IssuesListSerializer(serializers.ModelSerializer):
+    author_user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
+    assignee_user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
+    project = serializers.SlugRelatedField(slug_field="title", queryset=Projects.objects.all())
 
     class Meta:
         model = Issues
@@ -41,7 +48,9 @@ class IssuesListSerializer(serializers.ModelSerializer):
         ]
 
 class CommentsListSerializer(serializers.ModelSerializer):
-
+    author_user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
+    issue = serializers.SlugRelatedField(slug_field="title", queryset=Issues.objects.all())
+    projects = ProjectsListSerializer(source='issue.project')
     class Meta:
         model = Comments
         fields = [
@@ -49,4 +58,5 @@ class CommentsListSerializer(serializers.ModelSerializer):
         'description',
         'author_user',
         'issue',
+        'projects',
         ]
