@@ -73,7 +73,7 @@ class Issues(models.Model):
       super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.title
+        return f'{self.title} {self.project} {self.author_user} {self.assignee_user}'
 
 
 

@@ -47,7 +47,7 @@ class IssuesListSerializer(serializers.ModelSerializer):
         'assignee_user',
         ]
 
-class CommentsListSerializer(serializers.ModelSerializer):
+class ReadCommentsListSerializer(serializers.ModelSerializer):
     author_user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
     issue = serializers.SlugRelatedField(slug_field="title", queryset=Issues.objects.all())
     projects = ProjectsListSerializer(source='issue.project')
@@ -59,4 +59,16 @@ class CommentsListSerializer(serializers.ModelSerializer):
         'author_user',
         'issue',
         'projects',
+        ]
+
+class WriteCommentsListSerializer(serializers.ModelSerializer):
+    author_user = serializers.SlugRelatedField(slug_field="user_name", queryset=Users.objects.all())
+    issue = serializers.SlugRelatedField(slug_field="title", queryset=Issues.objects.all())
+    class Meta:
+        model = Comments
+        fields = [
+        'id',
+        'description',
+        'author_user',
+        'issue',
         ]
