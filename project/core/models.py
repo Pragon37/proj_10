@@ -27,7 +27,7 @@ class Projects(models.Model):
     author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='projects')
 
     def __str__(self):
-        return self.title
+        return f'{self.title}'
 
 class Issues(models.Model):
     BUG = 'BUG'
@@ -61,7 +61,7 @@ class Issues(models.Model):
     description = models.CharField(max_length=255)
     tag = models.CharField(max_length=10, choices=TAG_CHOICES, default=BUG, )
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default=LOW, )
-    project = models.ForeignKey(Projects, on_delete=models.PROTECT , related_name='issues')    
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE , related_name='issues')    
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=TODO, )
     author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='author_issues')
     assignee_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='assignee_issues', blank=True)
@@ -80,7 +80,7 @@ class Issues(models.Model):
 class Comments(models.Model):
     description = models.CharField(max_length=255)
     author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='comments')
-    issue = models.ForeignKey(Issues, on_delete=models.PROTECT , related_name='comments')
+    issue = models.ForeignKey(Issues, on_delete=models.CASCADE , related_name='comments')
     created_time =  models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -107,7 +107,7 @@ class Contributors(models.Model):
         (REVIEWER, 'Reviewer'),
      ]
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='contributors')
-    project = models.ForeignKey(Projects, on_delete=models.PROTECT , related_name='contributors')
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE , related_name='contributors')
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=REVIEWER, )
     permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default=READ, )
 

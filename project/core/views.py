@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticate
  
 from core.models import Projects, Contributors, Issues, Comments
 from core.serializers import ProjectsListSerializer, ContributorsListSerializer, IssuesListSerializer, ReadCommentsListSerializer, WriteCommentsListSerializer
-from core.permissions import AllowContributorsOnly, AllowAuthorEditOrReadOnly, AllowAuthorEditIssuesOrReadOnly
+from core.permissions import AllowContributorsOnly, AllowContributorsEdit, AllowAuthorEditOrReadOnly
  
 class ProjectsViewset(ModelViewSet):
     """WET, not DRY : IsAuthenticated must be set in view to avoid Internal Server Error when not authenticated.
@@ -20,16 +20,15 @@ class ProjectsViewset(ModelViewSet):
 class ContributorsViewset(ModelViewSet):
  
     serializer_class = ContributorsListSerializer
-    permission_classes = [IsAuthenticated, AllowContributorsOnly,]
+    permission_classes = [IsAuthenticated, AllowContributorsEdit, AllowContributorsOnly ]
 
- 
     def get_queryset(self):
         return Contributors.objects.filter(project=self.kwargs['project_pk'])
 
 class IssuesViewset(ModelViewSet):
  
     serializer_class = IssuesListSerializer
-    permission_classes = [IsAuthenticated, AllowAuthorEditIssuesOrReadOnly,]
+    permission_classes = [IsAuthenticated, AllowContributorsOnly, AllowAuthorEditOrReadOnly,]
 
  
     def get_queryset(self):
@@ -38,7 +37,7 @@ class IssuesViewset(ModelViewSet):
 
 class CommentsViewset(ModelViewSet):
  
-    permission_classes = [IsAuthenticated, AllowAuthorEditOrReadOnly]
+    permission_classes = [IsAuthenticated, AllowContributorsOnly, AllowAuthorEditOrReadOnly]
  
     def get_queryset(self):
         return Comments.objects.filter(issue=self.kwargs['issue_pk'], issue__project__pk=self.kwargs['project_pk'])

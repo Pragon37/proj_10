@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "8ab728f5-85a7-45a7-9b07-0f282163aad9",
 		"name": "SoftDeskAPI",
+		"description": "# 1-Purpose:\n\nSoftDesk API allows to report technical issues and track the progress of their resolution.\n\n# 2-Structure:\n\nThe API provide a repository for users, contributors, projects, issues and comments.\n\nA project is owned by a user. It is comprised of several issues. Each issue may have several comments made by contributors of the project.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -37,7 +38,8 @@
 								"register",
 								""
 							]
-						}
+						},
+						"description": "## Description:\n\nBefore being able to use the API a user must register by providing its user_name, email and password in the register endpoint"
 					},
 					"response": []
 				},
@@ -85,7 +87,8 @@
 								"login",
 								""
 							]
-						}
+						},
+						"description": "## Description:\n\nRegistered users shall login into the API to allow themselves using the API.\n\nThey do so by providing their email and password. The API return JWT access and refresh tokens."
 					},
 					"response": []
 				}
@@ -114,7 +117,8 @@
 								"projects",
 								""
 							]
-						}
+						},
+						"description": "## Description:\n\nList project displays all existing project for a user that is authenticated."
 					},
 					"response": []
 				},
@@ -275,7 +279,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"description": "## Description:\n\nA project designates some work that will require improvements. The improvement requests are reported as issues. A project has an owner and may have several issues. It can only be modified or deleted by the project owner. When a user logs in, the access token is automatically fed in using Postman variable."
 		},
 		{
 			"name": "Contributors",
