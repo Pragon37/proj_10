@@ -1,0 +1,399 @@
+1-Registering new user:
+{
+    "user_name": "lewiscar",
+    "email": "lewiscar@gmail.com",
+    "password": "123"
+}
+
+Outcome : Status 201 Created
+
+---------------------------------
+
+2-Log in new user :
+
+{"email":"lewiscar@gmail.com",
+"password":"123"
+}
+
+Outcome : Status 200 OK + refresh and access Token
+
+---------------------------------
+
+3-Log in unregistered user
+
+
+{"email":"lewiscarr@gmail.com",
+"password":"123"
+}
+
+Outcome: Status 401 Unauthorized
+
+{
+    "detail": "No active account found with the given credentials"
+}
+
+---------------------------------
+
+4-Log in new user :
+If not logging again Status 401 Unauthorized.
+
+{"email":"lewiscar@gmail.com",
+"password":"123"
+}
+
+---------------------------------
+
+
+5-Remove auth by selecting no auth instead of bearer token
+Status 401 Unauthorized
+{
+    "detail": "Authentication credentials were not provided."
+}
+
+---------------------------------
+
+
+6-Listing projects : List project
+Set bearer token first
+
+Status 200 : OK
+
+....Project lists.... All projects listed
+
+---------------------------------
+
+7-Create project:
+
+Request body = 
+{
+            "title": "Proj_8",
+            "description": "HHHH",
+            "type": "IOS",
+            "author_user": "lewiscar"
+
+Outcome Status 201 Created
+        }
+{
+    "id": 10,
+    "title": "Proj_8",
+    "description": "HHHH",
+    "type": "IOS",
+    "author_user": "lewiscar"
+}
+
+---------------------------------
+
+8-Retrieve projects : 
+
+http://127.0.0.1:8000/core/projects/??/
+
+Outcome Status 200 OK
+
+}
+    "id": 10,
+    "title": "Proj_8",
+    "description": "HHHH",
+    "type": "IOS",
+    "author_user": "lewiscar"
+}
+
+---------------------------------
+
+9-Patch Project
+http://127.0.0.1:8000/core/projects/??/
+
+{"title": "PROJ_8"}
+
+Outcome status 200 OK
+
+{
+    "id": 10,
+    "title": "PROJ_7",
+    "description": "HHHH",
+    "type": "IOS",
+    "author_user": "lewiscar"
+}
+
+10-Login another user 
+
+{"email":"johndoe@gmail.com",
+"password":"123"
+}
+
+----------------------------------
+
+11-Try delete project just created that do not belong to logged User
+
+http://127.0.0.1:8000/core/projects/11/
+
+Outcome Status 403 Forbidden
+
+{
+    "detail": "Project access is restricted to author or contributors only."
+}
+
+-----------------
+
+12-Try delete project owner (after log in of owner)
+
+
+outcome status 204 no content
+
+{
+    "detail": "Project access is restricted to author or contributors only."
+}
+
+-----------------
+
+13-List contributors:
+
+http://127.0.0.1:8000/core/projects/??/contributors
+
+
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+}
+
+14-Add contributors (twice)
+
+Beware consistency betwee uri id and body
+
+http://127.0.0.1:8000/core/projects/??/contributors
+
+{
+            "user": "pamcoe",
+            "project": "PROJ_8",
+            "role": "REVIEWER",
+            "permission": "READ"
+        }
+
+{
+    "id": 26,
+    "user": "jameshay",
+    "project": "PROJ_8",
+    "role": "REVIEWER",
+    "permission": "READ"
+}
+
+15-Add user when not project owner
+Login as johndoe
+
+http://127.0.0.1:8000/core/projects/??/contributors/
+
+
+        {
+            "user": "johndoe",
+            "project": "PROJ_8",
+            "role": "REVIEWER",
+            "permission": "READ"
+        }
+
+Outcome : Status 403 Forbidden
+
+{
+    "detail": "You do not have permission to perform this action."
+}
+
+----------------
+
+16-Delete contributor:
+
+Log again as lewiscar and try deleting a contributor
+
+Start by listing contributors,
+Then select one. Be careful to know project_id and contributor id
+Go to delete , set up the correct uri witj correct ids
+delete
+
+Status 204 no Content
+
+List again to be verify delete happened.
+
+------------------
+
+17-Add again a contributor
+
+List contributors to verify
+
+------------------
+
+18-List issues for project
+No issues at that stage
+
+status 200 Ok
+
+{
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+}
+
+
+------------------
+19-Create Issue
+Login a contributor (pamcoe)
+http://127.0.0.1:8000/core/projects/12/issues/
+
+{
+            "title": "ISSUE_12.1",
+            "tag": "BUG",
+            "project": "PROJ_8",
+            "status": "TODO",
+            "author_user": "pamcoe",
+            "assignee_user": "jameshay"
+        }
+
+Status 201 created
+
+{
+    "id": 13,
+    "title": "ISSUE_12.1",
+    "tag": "BUG",
+    "project": "PROJ_8",
+    "status": "TODO",
+    "author_user": "pamcoe",
+    "assignee_user": "jameshay"
+}
+
+Login a contributor (jameshay)
+http://127.0.0.1:8000/core/projects/12/issues/
+
+19-Login as non contributor and try to delete issue
+Login as johndoe
+
+Status 403 forbidden
+{
+    "detail": "Project access is restricted to author or contributors only."
+}
+
+20-Login as contributor and try deleting other contributor issue
+
+Login as pamcoe
+http://127.0.0.1:8000/core/projects/12/issues/14/
+
+Try deleting issue of jameshay
+
+{
+    "detail": "You do not have permission to perform this action."
+}
+
+20-Edit issue
+Login as pamcoe
+http://127.0.0.1:8000/core/projects/12/issues/13/
+
+Status 200 OK
+{
+    "id": 13,
+    "title": "ISSUE_12.1",
+    "tag": "BUG",
+    "project": "PROJ_8",
+    "status": "ONGOING",
+    "author_user": "pamcoe",
+    "assignee_user": "jameshay"
+}
+
+21-Retrieve issue
+
+http://127.0.0.1:8000/core/projects/12/issues/13/
+
+Outcome Status 200 OK
+
+{
+    "id": 13,
+    "title": "ISSUE_12.1",
+    "tag": "BUG",
+    "project": "PROJ_8",
+    "status": "ONGOING",
+    "author_user": "pamcoe",
+    "assignee_user": "jameshay"
+}
+
+
+22-List Comments
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/
+
+{
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": []
+}
+
+23-Create comment
+Logged as pamcoe
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/
+{
+            "description": "Blabla_8.0",
+            "author_user": "pamcoe",
+            "issue": "ISSUE_12.1"
+}
+
+Logged as jameshay
+
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/
+
+{
+    "id": 11,
+    "description": "Blabla_8.1",
+    "author_user": "jameshay",
+    "issue": "ISSUE_12.1"
+}
+
+Logged as johndoe
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/10/
+Outcome status 403: forbidden
+{
+    "detail": "Project access is restricted to author or contributors only."
+}
+
+24 edit comment
+Login as pamcoe
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/10/
+Outcome Status 200 OK:
+{
+    "id": 10,
+    "description": "Blabla_8.2",
+    "author_user": "pamcoe",
+    "issue": "ISSUE_12.1"
+}
+
+25-Delete comments
+
+Login as pamcoe
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/10/
+
+Outcome status 204 no content
+
+26-List comments
+
+should show that there is one comments deleted
+
+
+27-Retrieve comment:
+
+http://127.0.0.1:8000/core/projects/12/issues/13/comments/11/
+
+Outcome status 200 OK
+
+{
+    "id": 11,
+    "description": "Blabla_8.1",
+    "author_user": "jameshay",
+    "issue": "ISSUE_12.1",
+    "projects": {
+        "id": 12,
+        "title": "PROJ_8",
+        "description": "HHHH",
+        "type": "IOS",
+        "author_user": "lewiscar"
+    }
+}
+28- Delete project
+
+http://127.0.0.1:8000/core/projects/12/
+Outcome status 200 OK
+
+No contributors/issues/comments for project 8

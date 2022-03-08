@@ -9,9 +9,9 @@ from core.permissions import AllowContributorsOnly, AllowContributorsEdit, Allow
  
 class ProjectsViewset(ModelViewSet):
     """WET, not DRY : IsAuthenticated must be set in view to avoid Internal Server Error when not authenticated.
-       Having it only in settings provokes an Internal Server Error !! Issue is not 100% though"""
+       Having it only in settings provokes an Internal Server Error !! Issue is not 100% clear though"""
     serializer_class = ProjectsListSerializer
-    permission_classes = [IsAuthenticated, AllowContributorsOnly,]
+    permission_classes = [IsAuthenticated, AllowContributorsOnly, ]
 
  
     def get_queryset(self):
