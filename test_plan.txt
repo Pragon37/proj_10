@@ -56,13 +56,13 @@ Status 401 Unauthorized
 6-Listing projects : List project
 Set bearer token first
 
-Status 200 : OK
+Status 403 : Forbidden
 
-....Project lists.... All projects listed
-
+New user neither have a project nor is a contributor
 ---------------------------------
 
 7-Create project:
+Log as admin first (admin@gmail.com, admin)
 
 Request body = 
 {

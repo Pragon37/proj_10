@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
+
 class UserManager(BaseUserManager):
 
     def create_superuser(self, email, user_name, first_name, password, **other_fields):
@@ -19,15 +20,13 @@ class UserManager(BaseUserManager):
 
         return self.create_user(email, user_name, first_name, password, **other_fields)
 
-
-
     def create_user(self, email, user_name, first_name, password, **other_fields):
         """
         Creates and saves a User with the given email,and password.
         """
         if not email:
             raise ValueError('You must provide an email address')
-        #lowercase the domain part of an email, so this part is case insensitive
+        """lowercase the domain part of an email, so this part is case insensitive"""
         email = self.normalize_email(email)
         user = self.model(email=email, user_name=user_name,
                           first_name=first_name, **other_fields)
@@ -40,7 +39,7 @@ class Users(AbstractBaseUser, PermissionsMixin):
     """
     An abstract base class implementing a fully featured User model with
     admin-compliant permissions.
- 
+
     """
     email = models.EmailField('email address', max_length=40, unique=True)
     user_name = models.CharField(max_length=30, unique=True)

@@ -1,11 +1,11 @@
 from rest_framework import serializers
 from .models import Users
- 
- 
+
+
 class UsersSerializer(serializers.ModelSerializer):
- 
+
     start_date = serializers.ReadOnlyField()
- 
+
     class Meta:
         model = Users
         fields = ('email', 'user_name', 'password', 'start_date')

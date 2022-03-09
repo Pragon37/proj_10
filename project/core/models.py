@@ -1,15 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-#class Users(models.Model):
-#    first_name = models.CharField(max_length=32)
-#    last_name = models.CharField(max_length=32)
-#    email = models.EmailField(max_length=128)
-#    password = models.CharField(max_length=32)
-#
-#    def __str__(self):
-#        return f'{self.first_name} {self.last_name}'
-    
+
 class Projects(models.Model):
     BACKEND = 'BACKEND'
     FRONTEND = 'FRONTEND'
@@ -24,10 +16,11 @@ class Projects(models.Model):
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=255)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=BACKEND, )
-    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='projects')
+    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='projects')
 
     def __str__(self):
         return f'{self.title}'
+
 
 class Issues(models.Model):
     BUG = 'BUG'
@@ -45,7 +38,7 @@ class Issues(models.Model):
         (LOW, 'Low'),
         (MEDIUM, 'Medium'),
         (HIGH, 'High'),
-    ]        
+    ]
     TODO = 'TODO'
     ONGOING = 'ONGOING'
     DONE = 'DONE'
@@ -54,37 +47,38 @@ class Issues(models.Model):
         (TODO, 'Todo'),
         (ONGOING, 'Ongoing'),
         (DONE, 'Done'),
-    ]     
+    ]
 
-       
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=255)
     tag = models.CharField(max_length=10, choices=TAG_CHOICES, default=BUG, )
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default=LOW, )
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE , related_name='issues')    
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='issues')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=TODO, )
-    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='author_issues')
-    assignee_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='assignee_issues', blank=True)
-    created_time =  models.DateTimeField(auto_now_add=True)
-    
+    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+                                    related_name='author_issues')
+    assignee_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
+                                      related_name='assignee_issues', blank=True)
+    created_time = models.DateTimeField(auto_now_add=True)
+
     def save(self, *args, **kwargs):
-      if not hasattr(self, 'assignee_user'):
-        self.assignee_user = self.author_user
-      super().save(*args, **kwargs)
+        if not hasattr(self, 'assignee_user'):
+            self.assignee_user = self.author_user
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.title} {self.project} {self.author_user} {self.assignee_user}'
 
 
-
 class Comments(models.Model):
     description = models.CharField(max_length=255)
-    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='comments')
-    issue = models.ForeignKey(Issues, on_delete=models.CASCADE , related_name='comments')
-    created_time =  models.DateTimeField(auto_now_add=True)
+    author_user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='comments')
+    issue = models.ForeignKey(Issues, on_delete=models.CASCADE, related_name='comments')
+    created_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.description} {self.author_user} {self.issue}'
+
 
 class Contributors(models.Model):
     READ = 'READ'
@@ -106,8 +100,8 @@ class Contributors(models.Model):
         (OWNER, 'Owner'),
         (REVIEWER, 'Reviewer'),
      ]
-    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT , related_name='contributors')
-    project = models.ForeignKey(Projects, on_delete=models.CASCADE , related_name='contributors')
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='contributors')
+    project = models.ForeignKey(Projects, on_delete=models.CASCADE, related_name='contributors')
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default=REVIEWER, )
     permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default=READ, )
 
