@@ -37,6 +37,8 @@ class IssuesViewset(ModelViewSet):
     def get_queryset(self):
         return Issues.objects.filter(project=self.kwargs['project_pk'])
 
+    def perform_create(self, serializer):
+        serializer.save(author_user=self.request.user)
 
 class CommentsViewset(ModelViewSet):
 
@@ -45,6 +47,9 @@ class CommentsViewset(ModelViewSet):
     def get_queryset(self):
         return Comments.objects.filter(issue=self.kwargs['issue_pk'], issue__project__pk=self.kwargs['project_pk'])
 
+    def perform_create(self, serializer):
+        serializer.save(author_user=self.request.user)
+    
     def get_serializer_class(self):
         if self.action in ("list", "retrieve"):
             return ReadCommentsListSerializer

@@ -58,7 +58,7 @@ Set bearer token first
 
 Status 403 : Forbidden
 
-New user neither have a project nor is a contributor
+New user does not have any project
 ---------------------------------
 
 7-Create project:
