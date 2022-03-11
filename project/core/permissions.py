@@ -52,7 +52,7 @@ class AllowContributorsOnly(BasePermission):
             isprojectcontributor = Contributors.objects.filter(user=request.user).exists()
             issuperuser = request.user.is_superuser
             return IsAuthenticated and (isprojectauthor or isprojectcontributor or issuperuser)
-        return (isprojectcontributor and request.method in SAFE_METHODS) or isprojectauthor
+        return isprojectcontributor  or isprojectauthor
 
 
 class AllowContributorsEdit(BasePermission):

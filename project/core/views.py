@@ -40,6 +40,9 @@ class IssuesViewset(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author_user=self.request.user)
 
+    def perform_update(self, serializer):
+        serializer.save(author_user=self.request.user)
+
 class CommentsViewset(ModelViewSet):
 
     permission_classes = [IsAuthenticated, AllowContributorsOnly, AllowAuthorEditOrReadOnly]
@@ -48,6 +51,9 @@ class CommentsViewset(ModelViewSet):
         return Comments.objects.filter(issue=self.kwargs['issue_pk'], issue__project__pk=self.kwargs['project_pk'])
 
     def perform_create(self, serializer):
+        serializer.save(author_user=self.request.user)
+
+    def perform_update(self, serializer):
         serializer.save(author_user=self.request.user)
     
     def get_serializer_class(self):
